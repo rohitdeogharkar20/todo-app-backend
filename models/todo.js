@@ -33,8 +33,8 @@ const createToDo = async (data, user) => {
         title : title.trim(),
         description : description.trim(),
         username : user.username,
-        startAt : startAt ? new Date(startAt) : "",
-        endAt : endAt ? new Date(endAt) : "",
+        startAt : startAt ? startAt : "",
+        endAt : endAt ? endAt : "",
         deleteStatus : 0,
         completeStatus : 0
     }

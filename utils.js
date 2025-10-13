@@ -2,18 +2,11 @@ const {
     getDB
 } = require('./connections/mongodb')
 
-function getISTDate() {
-    const now = new Date();
-    const offset = 5.5 * 60; 
-    const istTime = new Date(now.getTime() + offset * 60 * 1000);
-    return istTime;
-}
-
 const insertData = async(collectionName, data) =>{
     data = {
         ...data,
-        insertedAt : getISTDate(),
-        updatedAt : getISTDate()
+        insertedAt : new Date() ,
+        updatedAt : new Date()
     }
     const result = await getDB().collection(collectionName).insertOne(data)
     return result
@@ -41,11 +34,13 @@ const countData = async (collectionName, data) =>{
 }
 
 const getUserTodo = async (collectionName, username) => {
+    
     const result = await getDB().collection(collectionName).aggregate([
         {
             $match : {
                 username : username,
-                deleteStatus : 0
+                deleteStatus : 0,
+                // $or : [ { startAt : { $gt : new Date().toISOString() } }, { startAt : ""} ]
             },
         },
         {
@@ -66,6 +61,7 @@ const getUserTodo = async (collectionName, username) => {
             }
         }
     ]).toArray();
+
     return result;
 }
 
