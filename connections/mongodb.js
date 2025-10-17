@@ -1,28 +1,26 @@
-require('dotenv').config()
+require("dotenv").config();
 
 const {
-    MONGO_HOST = 'localhost',
-    MONGO_PORT = 27017,
-    MONGO_DATABASE = 'dev'
-} = process.env
+  MONGO_HOST = "localhost",
+  MONGO_PORT = 27017,
+  MONGO_DATABASE = "dev",
+} = process.env;
 
-const { MongoClient } = require('mongodb')
-let db
+const { MongoClient } = require("mongodb");
+let db;
 
-const client = new MongoClient(`mongodb://${MONGO_HOST}:${MONGO_PORT}`)
+const client = new MongoClient(`mongodb://${MONGO_HOST}:${MONGO_PORT}`);
 
-client.on('close', ()=>[
-    console.log('mongo connection closing')
-])
+client.on("close", () => [console.log("mongo connection closing")]);
 
-client.on('error', (err)=>{
-    console.log("mongo error occured ", err)
-})
+client.on("error", (err) => {
+  console.log("mongo error occured ", err);
+});
 
 async function connectDB() {
   if (!db) {
-    await client.connect();         
-    db = client.db(MONGO_DATABASE);         
+    await client.connect();
+    db = client.db(MONGO_DATABASE);
     console.log("mongo connected success");
   }
   return db;
@@ -35,4 +33,4 @@ function getDB() {
   return db;
 }
 
-module.exports = { connectDB, getDB, client }
+module.exports = { connectDB, getDB, client };
