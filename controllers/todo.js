@@ -12,7 +12,7 @@ const createToDo = async (req, res) => {
 
 const getTodoList = async (req, res) => {
   try {
-    const result = await Todos.getTodoList(req.query, req.user);
+    const result = await Todos.getTodoList(req.body, req.user);
     return res.status(result.statusCode).json(result);
   } catch (err) {
     console.log("err", err);
