@@ -57,13 +57,19 @@ const createToDo = async (data, user) => {
   }
 };
 
-const getTodoList = async (data, user) => {
-  const { page, limit } = data;
+const getTodoList = async (data, user) => { 
+
+  const { page, limit, filter } = data;
 
   const skip = (page - 1) * limit;
 
-  // const getToDo = await Mongo.findData('todos', {username : user.username, deleteStatus : 0}, {startAt : 1}, skip, limit)
-  const getToDo = await Mongo.getUserTodo("todos", user.username);
+  const getToDo = await Mongo.findData(
+    "todos",
+    { username: user.username, deleteStatus: 0, ...filter },
+    { startAt: 1 },
+    skip,
+    limit
+  );
 
   if (getToDo.length > 0) {
     return {

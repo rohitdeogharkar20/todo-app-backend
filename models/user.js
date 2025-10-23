@@ -93,6 +93,7 @@ const loginUser = async (data) => {
       return {
         statusCode: 200,
         token: generateToken({ username, email: userCheck[0].email }),
+        username : username,
         message: "Login Success",
       };
     } else {

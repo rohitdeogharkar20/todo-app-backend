@@ -3,8 +3,8 @@ const { getDB } = require("./connections/mongodb");
 const insertData = async (collectionName, data) => {
   data = {
     ...data,
-    insertedAt: new Date(),
-    updatedAt: new Date(),
+    insertedAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
   };
   const result = await getDB().collection(collectionName).insertOne(data);
   return result;
@@ -31,7 +31,7 @@ const findAndUpdateData = async (collectionName, filter, data) => {
   const updateDate = {
     $set: {
       ...data,
-      updatedAt: new Date(),
+      updatedAt: new Date().toISOString(),
     },
   };
   const result = await getDB()
@@ -45,53 +45,9 @@ const countData = async (collectionName, data) => {
   return result;
 };
 
-const getUserTodo = async (collectionName, username) => {
-  //base
-  const result = await getDB()
-    .collection(collectionName)
-    .aggregate([
-      {
-        $match: {
-          username: username,
-          deleteStatus: 0,
-          $or: [
-            {
-              startAt: {
-                $gt: new Date().toISOString(),
-                $lt: new Date(new Date().setHours(23, 59, 59)).toISOString(),
-              },
-            },
-            { startAt: "" },
-          ],
-        },
-      },
-      {
-        $addFields: {
-          sortDate: {
-            $cond: [
-              { $or: [{ $eq: ["$startAt", ""] }, { $not: ["$startAt"] }] },
-              new Date("9999-12-31T23:59:59Z"),
-              "$startAt",
-            ],
-          },
-        },
-      },
-      {
-        $sort: {
-          sortDate: 1,
-          insertedAt: 1,
-        },
-      },
-    ])
-    .toArray();
-
-  return result;
-};
-
 module.exports = {
   insertData,
   findData,
   findAndUpdateData,
   countData,
-  getUserTodo,
 };
