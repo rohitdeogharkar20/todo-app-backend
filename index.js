@@ -24,6 +24,10 @@ app.use(express.json());
 app.use("/api/users", userRoutes);
 app.use("/api/todos", todoRoutes);
 
+app.get("/", (req, res) => {
+  res.send("Hey there i am your todo.....");
+});
+
 const init = async () => {
   await connectDB();
 
