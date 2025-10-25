@@ -1,10 +1,17 @@
 require("dotenv").config();
 
-const { SERVER_HOST, SERVER_PORT } = process.env;
+const {
+  SERVER_HOST,
+  SERVER_PORT,
+  LOGGER_ENABLE = false,
+  ENVIRONMENT,
+} = process.env;
 
 const express = require("express");
 const app = express();
 const cors = require("cors");
+const log = require("./logger");
+global.log = log;
 
 const { connectDB } = require("./connections/mongodb");
 
@@ -25,17 +32,22 @@ app.use("/api/users", userRoutes);
 app.use("/api/todos", todoRoutes);
 
 app.get("/", (req, res) => {
+  global.log("home route hit....");
   res.send("Hey there i am your todo.....");
 });
 
 const init = async () => {
-  await connectDB();
+  if (LOGGER_ENABLE == "true") {
+    global.log("LOGGER ENABLE !!!");
+  } else {
+    console.log("LOGGER DISABLED !!!");
+  }
 
   app.listen(SERVER_PORT, () => {
-    console.log(
-      `Server up and running on http://${SERVER_HOST}:${SERVER_PORT}`
-    );
+    global.log(`${ENVIRONMENT} server started on port`, SERVER_PORT);
   });
+
+  await connectDB();
 };
 
 init();

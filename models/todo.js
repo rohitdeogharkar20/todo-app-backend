@@ -13,6 +13,7 @@ const createToDo = async (data, user) => {
   const validateResult = await validate.check();
 
   if (!validateResult) {
+    global.log("createToDo Validation failed", { user: user.username, data });
     return {
       statusCode: 201,
       result: validate.errors,
@@ -27,6 +28,7 @@ const createToDo = async (data, user) => {
     ],
   });
   if (checkResult.length > 0) {
+    global.log("Todo with same title already exist!", { title, user });
     return {
       statusCode: 201,
       message: "Todo with same title already exist!",
@@ -45,11 +47,19 @@ const createToDo = async (data, user) => {
   };
   const result = await Mongo.insertData("todos", toDodata);
   if (result) {
+    global.log("Todo created success", {
+      username: user.username,
+      todoId: toDodata.todoId,
+    });
     return {
       statusCode: 200,
       message: "To do created successfully!",
     };
   } else {
+    global.log("To do creation unsuccess!", {
+      username: user.username,
+      todoId: toDodata.todoId,
+    });
     return {
       statusCode: 201,
       message: "To do creation unsuccess!",
@@ -57,8 +67,7 @@ const createToDo = async (data, user) => {
   }
 };
 
-const getTodoList = async (data, user) => { 
-
+const getTodoList = async (data, user) => {
   const { page, limit, filter } = data;
 
   const skip = (page - 1) * limit;
@@ -72,12 +81,20 @@ const getTodoList = async (data, user) => {
   );
 
   if (getToDo.length > 0) {
+    global.log("Todo fetch sucess", {
+      user: user.username,
+      getToDoCount: getToDo.length,
+    });
     return {
       statusCode: 200,
       message: "Todos found successfully!",
       data: getToDo,
     };
   } else {
+    global.log("no todos found!", {
+      user: user.username,
+      getToDoCount: getToDo.length,
+    });
     return {
       statusCode: 200,
       message: "no todos found!",
@@ -95,6 +112,7 @@ const getToDoById = async (data, user) => {
   const validateResult = await validate.check();
 
   if (!validateResult) {
+    global.log("getToDoById Validation failed", { user: user.username, data });
     return {
       statusCode: 201,
       result: validate.errors,
@@ -104,12 +122,20 @@ const getToDoById = async (data, user) => {
   const getToDo = await Mongo.findData("todos", { todoId });
 
   if (getToDo.length > 0) {
+    global.log("To do found", {
+      user: user.username,
+      getToDo,
+    });
     return {
       statusCode: 200,
       message: "to do found success",
       data: getToDo,
     };
   } else {
+    global.log("no todos found!", {
+      user: user.username,
+      getToDo,
+    });
     return {
       statusCode: 201,
       message: "No todo found!",
@@ -125,6 +151,7 @@ const updateTodoById = async (data, user) => {
   const validateResult = await validate.check();
 
   if (!validateResult) {
+    global.log("updateTodoById failed", data);
     return {
       statusCode: 201,
       result: validate.errors,
@@ -136,11 +163,19 @@ const updateTodoById = async (data, user) => {
   const updateTodo = await Mongo.findAndUpdateData("todos", fitler, data);
 
   if (updateTodo == null) {
+    global.log("update todo fail", {
+      user: user.username,
+      updateTodo,
+    });
     return {
       statusCode: 201,
       message: "No todo found!",
     };
   } else {
+    global.log("Update todo success!", {
+      user: user.username,
+      updateTodo,
+    });
     return {
       statusCode: 200,
       message: "Update todo success!",
@@ -158,6 +193,10 @@ const deleteTodoById = async (data, user) => {
   const validateResult = await validate.check();
 
   if (!validateResult) {
+    global.log("deleteTodoById Validation failed", {
+      user: user.username,
+      data,
+    });
     return {
       statusCode: 201,
       result: validate.errors,
@@ -173,11 +212,19 @@ const deleteTodoById = async (data, user) => {
   const updateTodo = await Mongo.findAndUpdateData("todos", fitler, updateData);
 
   if (updateTodo == null) {
+    global.log("deleteTodoById fail", {
+      user: user.username,
+      updateTodo,
+    });
     return {
       statusCode: 201,
       message: "No todo found!",
     };
   } else {
+    global.log("deleteTodoById success", {
+      user: user.username,
+      updateTodo,
+    });
     return {
       statusCode: 200,
       message: "delete todo success!",
@@ -195,6 +242,7 @@ const completeMarkOperation = async (data, user) => {
   const validateResult = await validate.check();
 
   if (!validateResult) {
+    global.log("completeMarkOperation failed", data);
     return {
       statusCode: 201,
       result: validate.errors,
@@ -210,6 +258,12 @@ const completeMarkOperation = async (data, user) => {
     completeStatus == 0
       ? (message = "Todo changed to incomplete success!")
       : (message = "Todo Completed Success!");
+
+    global.log("completeMarkOperation todo success", {
+      user: user.username,
+      todoId: updateTodo.todoId,
+      message,
+    });
     return {
       statusCode: 200,
       message,

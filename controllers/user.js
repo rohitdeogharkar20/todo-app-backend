@@ -5,7 +5,7 @@ const registerUser = async (req, res) => {
     const result = await User.registerUser(req.body);
     return res.status(result.statusCode).json(result);
   } catch (err) {
-    console.log("err", err);
+    global.log("User Register Error Occured", err.message)
     return res.status(500).send("internal server error");
   }
 };
@@ -15,7 +15,7 @@ const loginUser = async (req, res) => {
     const result = await User.loginUser(req.body);
     return res.status(result.statusCode).json(result);
   } catch (err) {
-    console.log("err", err);
+    global.log("User Login Error Occured", err.message)
     return res.status(500).send("internal server error");
   }
 };
@@ -32,7 +32,7 @@ const findUser = async (req, res) => {
     };
     return res.status(result.statusCode).json(result);
   } catch (err) {
-    console.log("err", err);
+    global.log("Logi Error Occured", err.message)
     return res.status(500).send("internal server error");
   }
 };

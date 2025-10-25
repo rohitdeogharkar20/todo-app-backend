@@ -27,6 +27,7 @@ const registerUser = async (data) => {
   const validateResult = await validate.check();
 
   if (!validateResult) {
+    global.log("registerUser Validation failed", data);
     return {
       statusCode: 202,
       message: validate.errors,
@@ -54,12 +55,14 @@ const registerUser = async (data) => {
     const result = await Mongo.insertData("users", userData);
 
     if (result) {
+      global.log("New User registered", userData);
       return {
         statusCode: 200,
         message: "User Registered Successfully!",
         data: result,
       };
     } else {
+      global.log("User registeration failure", result);
       return {
         statusCode: 201,
         message: "User Registered Unsuccessfull!",
@@ -79,6 +82,7 @@ const loginUser = async (data) => {
   const validateResult = await validate.check();
 
   if (!validateResult) {
+    global.log("Bad Paramters supplied", data);
     return {
       statusCode: 202,
       message: validate.errors,
@@ -90,19 +94,22 @@ const loginUser = async (data) => {
   if (userCheck.length > 0) {
     const passwordCheck = await bcrypt.compare(password, userCheck[0].password);
     if (passwordCheck) {
+      global.log("User logged in", username);
       return {
         statusCode: 200,
         token: generateToken({ username, email: userCheck[0].email }),
-        username : username,
+        username: username,
         message: "Login Success",
       };
     } else {
+      global.log("Wrong credentials passed", username);
       return {
         statusCode: 201,
         message: "Wrong Credentials",
       };
     }
   } else {
+    global.log("Wrong credentials passed", username);
     return {
       statusCode: 201,
       message: "Wrong Credentials",
