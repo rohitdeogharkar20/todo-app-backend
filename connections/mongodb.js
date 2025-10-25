@@ -4,12 +4,14 @@ const {
   MONGO_HOST = "localhost",
   MONGO_PORT = 27017,
   MONGO_DATABASE = "dev",
+  MONGO_CONNECTION
 } = process.env;
 
 const { MongoClient } = require("mongodb");
 let db;
 
-const client = new MongoClient(`mongodb://${MONGO_HOST}:${MONGO_PORT}`);
+// const client = new MongoClient(`mongodb://${MONGO_HOST}:${MONGO_PORT}`);
+const client = new MongoClient(MONGO_CONNECTION);
 
 client.on("close", () => [console.log("mongo connection closing")]);
 
