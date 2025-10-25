@@ -4,7 +4,7 @@ const {
   MONGO_HOST = "localhost",
   MONGO_PORT = 27017,
   MONGO_DATABASE = "dev",
-  MONGO_CONNECTION,
+  MONGO_REMOTE_CONNECTION,
   ENVIRONMENT,
 } = process.env;
 
@@ -15,7 +15,7 @@ let client;
 if (ENVIRONMENT == "development") {
   client = new MongoClient(`mongodb://${MONGO_HOST}:${MONGO_PORT}`);
 } else {
-  client = new MongoClient(MONGO_CONNECTION);
+  client = new MongoClient(MONGO_REMOTE_CONNECTION);
 }
 
 client.on("close", () => global.log("mongo connection closing"));
