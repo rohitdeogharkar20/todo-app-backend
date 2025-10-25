@@ -4,26 +4,31 @@ const {
   MONGO_HOST = "localhost",
   MONGO_PORT = 27017,
   MONGO_DATABASE = "dev",
-  MONGO_CONNECTION
+  MONGO_CONNECTION,
+  ENVIRONMENT,
 } = process.env;
 
 const { MongoClient } = require("mongodb");
 let db;
+let client;
 
-// const client = new MongoClient(`mongodb://${MONGO_HOST}:${MONGO_PORT}`);
-const client = new MongoClient(MONGO_CONNECTION);
+if (ENVIRONMENT == "development") {
+  client = new MongoClient(`mongodb://${MONGO_HOST}:${MONGO_PORT}`);
+} else {
+  client = new MongoClient(MONGO_CONNECTION);
+}
 
-client.on("close", () => [console.log("mongo connection closing")]);
+client.on("close", () => global.log("mongo connection closing"));
 
 client.on("error", (err) => {
-  console.log("mongo error occured ", err);
+  global.log("Mongo start up error", err);
 });
 
 async function connectDB() {
   if (!db) {
     await client.connect();
     db = client.db(MONGO_DATABASE);
-    console.log("mongo connected success");
+    global.log("mongo connected success", ENVIRONMENT);
   }
   return db;
 }

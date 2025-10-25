@@ -5,7 +5,7 @@ const createToDo = async (req, res) => {
     const result = await Todos.createToDo(req.body, req.user);
     return res.status(result.statusCode).json(result);
   } catch (err) {
-    console.log("err", err);
+    global.log("createToDo error", err.message);
     return res.status(500).send("internal server error");
   }
 };
@@ -15,7 +15,7 @@ const getTodoList = async (req, res) => {
     const result = await Todos.getTodoList(req.body, req.user);
     return res.status(result.statusCode).json(result);
   } catch (err) {
-    console.log("err", err);
+    global.log("getTodoList error", err.message);
     return res.status(500).send("internal server error");
   }
 };
@@ -25,7 +25,7 @@ const getToDoById = async (req, res) => {
     const result = await Todos.getToDoById(req.query, req.user);
     return res.status(result.statusCode).json(result);
   } catch (err) {
-    console.log("err", err);
+    global.log("getToDoById error", err.message);
     return res.status(500).send("internal server error");
   }
 };
@@ -35,7 +35,7 @@ const updateTodoById = async (req, res) => {
     const result = await Todos.updateTodoById(req.body, req.user);
     return res.status(result.statusCode).json(result);
   } catch (err) {
-    console.log("err", err);
+    global.log("updateTodoById error", err.message);
     return res.status(500).send("internal server error");
   }
 };
@@ -45,7 +45,7 @@ const deleteTodoById = async (req, res) => {
     const result = await Todos.deleteTodoById(req.body, req.user);
     return res.status(result.statusCode).json(result);
   } catch (err) {
-    console.log("err", err);
+    global.log("deleteTodoById error", err.message);
     return res.status(500).send("internal server error");
   }
 };
@@ -55,7 +55,7 @@ const completeMarkOperation = async (req, res) => {
     const result = await Todos.completeMarkOperation(req.body, req.user);
     return res.status(result.statusCode).json(result);
   } catch (err) {
-    console.log("err", err);
+    global.log("completeMarkOperation error", err.message);
     return res.status(500).send("internal server error");
   }
 };
