@@ -1,12 +1,15 @@
 const moment = require("moment");
 
-const { LOGGER_ENABLE = false } = process.env;
+const { LOGGER_ENABLE = false, ENVIRONMENT } = process.env;
 
 const log = (message, data) => {
-  const time = moment().format("YYYY-MM-DD HH:mm:ss.SSS");
-
   if (LOGGER_ENABLE == "true") {
-    console.log(time + " | " + message + " ==> ", data ? data : "");
+    if (ENVIRONMENT == "development") {
+      const time = moment().format("YYYY-MM-DD HH:mm:ss.SSS");
+      console.log(time + " | " + message + " ==> ", data ? data : "");
+    } else {
+      console.log(message + " ==> ", data ? data : "");
+    }
   }
 };
 
