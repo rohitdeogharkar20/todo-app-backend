@@ -32,7 +32,7 @@ const findUser = async (req, res) => {
     };
     return res.status(result.statusCode).json(result);
   } catch (err) {
-    global.log("Logi Error Occured", err.message)
+    global.log("findUser error Occured", err.message)
     return res.status(500).send("internal server error");
   }
 };
