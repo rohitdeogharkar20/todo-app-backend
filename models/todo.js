@@ -47,19 +47,13 @@ const createToDo = async (data, user) => {
   };
   const result = await Mongo.insertData("todos", toDodata);
   if (result) {
-    global.log("Todo created success", {
-      username: user.username,
-      todoId: toDodata.todoId,
-    });
+    global.log("Todo created success", toDodata);
     return {
       statusCode: 200,
       message: "To do created successfully!",
     };
   } else {
-    global.log("To do creation unsuccess!", {
-      username: user.username,
-      todoId: toDodata.todoId,
-    });
+    global.log("To do creation unsuccess!", toDodata);
     return {
       statusCode: 201,
       message: "To do creation unsuccess!",
@@ -122,20 +116,14 @@ const getToDoById = async (data, user) => {
   const getToDo = await Mongo.findData("todos", { todoId });
 
   if (getToDo.length > 0) {
-    global.log("To do found", {
-      user: user.username,
-      getToDo,
-    });
+    global.log("To do found", getToDo);
     return {
       statusCode: 200,
       message: "to do found success",
       data: getToDo,
     };
   } else {
-    global.log("no todos found!", {
-      user: user.username,
-      getToDo,
-    });
+    global.log("no todos found!", getToDo);
     return {
       statusCode: 201,
       message: "No todo found!",
@@ -163,19 +151,13 @@ const updateTodoById = async (data, user) => {
   const updateTodo = await Mongo.findAndUpdateData("todos", fitler, data);
 
   if (updateTodo == null) {
-    global.log("update todo fail", {
-      user: user.username,
-      updateTodo,
-    });
+    global.log("update todo fail", updateTodo);
     return {
       statusCode: 201,
       message: "No todo found!",
     };
   } else {
-    global.log("Update todo success!", {
-      user: user.username,
-      updateTodo,
-    });
+    global.log("Update todo success!", updateTodo);
     return {
       statusCode: 200,
       message: "Update todo success!",
@@ -212,19 +194,13 @@ const deleteTodoById = async (data, user) => {
   const updateTodo = await Mongo.findAndUpdateData("todos", fitler, updateData);
 
   if (updateTodo == null) {
-    global.log("deleteTodoById fail", {
-      user: user.username,
-      updateTodo,
-    });
+    global.log("deleteTodoById fail", updateTodo);
     return {
       statusCode: 201,
       message: "No todo found!",
     };
   } else {
-    global.log("deleteTodoById success", {
-      user: user.username,
-      updateTodo,
-    });
+    global.log("deleteTodoById success", updateTodo);
     return {
       statusCode: 200,
       message: "delete todo success!",
@@ -260,8 +236,7 @@ const completeMarkOperation = async (data, user) => {
       : (message = "Todo Completed Success!");
 
     global.log("completeMarkOperation todo success", {
-      user: user.username,
-      todoId: updateTodo.todoId,
+      updateTodo,
       message,
     });
     return {
