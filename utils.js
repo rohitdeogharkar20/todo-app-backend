@@ -1,10 +1,11 @@
 const { getDB } = require("./connections/mongodb");
+const dayjs = require('dayjs')
 
 const insertData = async (collectionName, data) => {
   data = {
     ...data,
-    insertedAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
+    insertedAt: dayjs().format("YYYY-MM-DD HH:mm:ss"),
+    updatedAt: dayjs().format("YYYY-MM-DD HH:mm:ss"),
   };
   const result = await getDB().collection(collectionName).insertOne(data);
   return result;
