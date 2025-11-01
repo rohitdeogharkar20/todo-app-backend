@@ -1,5 +1,5 @@
 const { getDB } = require("./connections/mongodb");
-const dayjs = require('dayjs')
+const dayjs = require("dayjs");
 
 const insertData = async (collectionName, data) => {
   data = {
@@ -14,13 +14,14 @@ const insertData = async (collectionName, data) => {
 const findData = async (
   collectionName,
   filter,
+  projection = {},
   sort = {},
   skip = 0,
   limit = 0
 ) => {
   const result = await getDB()
     .collection(collectionName)
-    .find(filter)
+    .find(filter, { projection })
     .sort(sort)
     .skip(Number(skip))
     .limit(Number(limit))

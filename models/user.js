@@ -117,20 +117,17 @@ const loginUser = async (data) => {
   }
 };
 
-const findUser = async (data, skip, limit, user) => {
-  // const {name, email} = data
-  // if(!name || !email){
-  //     return {
-  //         statusCode: 404,
-  //         message : "bad parameters"
-  //     }
-  // }
-  const result = await Mongo.findData("users", data, skip, limit);
-  const total = await Mongo.count("users", data);
+const findUser = async (data, user = {}) => {
+  let { skip, limit, filter = {} } = data;
+
+  const result = await Mongo.findData("users", {}, {
+    "username" : 1, "userId" : 1
+  });
+  // const total = await Mongo.count("users", data);
   return {
     statusCode: 200,
-    totalPages: Math.ceil(total / limit),
-    totalItems: total,
+    // totalPages: Math.ceil(total / limit),
+    // totalItems: total,
     result,
   };
 };
