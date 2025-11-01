@@ -2,6 +2,7 @@ require("dotenv").config();
 
 const { addQueue } = require("../messageQueue/producer");
 const Messages = require("../models/message");
+const User = require('../models/user')
 const { JWT_SECRET = "&^*1$-+12345&*^($)", JWT_EXPIRY = "1d" } = process.env;
 
 const jwt = require("jsonwebtoken");
@@ -28,6 +29,12 @@ class SocketServer {
         socket.id = roomName;
         this.io.to(roomName).emit("joinRoom", "You connected to the server");
       });
+
+      socket.on("previousChats", async (data)=>{
+        const {username} = data
+        const result = await User.findUser(data)
+        this.io.to(username).emit("previousChats", result)
+      })
 
       socket.on("previousMessages", async (data) => {
         const result = await Messages.getMessages(data);

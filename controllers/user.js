@@ -22,14 +22,7 @@ const loginUser = async (req, res) => {
 
 const findUser = async (req, res) => {
   try {
-    const { page = 1, limit = 10 } = req.body.paginate;
-    const skip = (page - 1) * limit;
-    let result = await User.findUser(req.body.data, skip, limit, req.user);
-    result = {
-      page,
-      limit,
-      ...result,
-    };
+    const result = await User.findUser(req.body, req.user);
     return res.status(result.statusCode).json(result);
   } catch (err) {
     global.log("findUser error Occured", err.message);

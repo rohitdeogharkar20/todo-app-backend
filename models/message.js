@@ -38,6 +38,7 @@ const getMessages = async (data) => {
   const result = await Mongo.findData(
     "messages",
     filter,
+    {},
     { insertedAt: -1 },
     pagination,
     10

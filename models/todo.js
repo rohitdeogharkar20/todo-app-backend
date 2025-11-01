@@ -69,6 +69,7 @@ const getTodoList = async (data, user) => {
   const getToDo = await Mongo.findData(
     "todos",
     { username: user.username, deleteStatus: 0, ...filter },
+    {},
     { startAt: 1 },
     skip,
     limit
