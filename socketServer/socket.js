@@ -32,7 +32,7 @@ class SocketServer {
 
       socket.on("previousChats", async (data)=>{
         const {username} = data
-        const result = await User.findUser(data)
+        const result = await User.findUser(data, socket.username)
         this.io.to(username).emit("previousChats", result)
       })
 
