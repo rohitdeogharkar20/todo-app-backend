@@ -41,7 +41,7 @@ const getMessages = async (data) => {
     {},
     { insertedAt: -1 },
     pagination,
-    10
+    20
   );
 
   if (result.length > 0) {

@@ -120,9 +120,14 @@ const loginUser = async (data) => {
 const findUser = async (data, user = {}) => {
   let { skip, limit, filter = {} } = data;
 
-  const result = await Mongo.findData("users", {}, {
-    "username" : 1, "userId" : 1
-  });
+  const result = await Mongo.findData(
+    "users",
+    { username: { $ne: user } },
+    {
+      username: 1,
+      userId: 1,
+    }
+  );
   // const total = await Mongo.count("users", data);
   return {
     statusCode: 200,
