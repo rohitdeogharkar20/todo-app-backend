@@ -2,7 +2,8 @@ require("dotenv").config();
 
 const { addQueue } = require("../messageQueue/producer");
 const Messages = require("../models/message");
-const User = require('../models/user')
+const User = require("../models/user");
+const maps = require("../maps/userMaps");
 const { JWT_SECRET = "&^*1$-+12345&*^($)", JWT_EXPIRY = "1d" } = process.env;
 
 const jwt = require("jsonwebtoken");
@@ -23,22 +24,30 @@ class SocketServer {
         socket.username ? socket.username : socket.id
       );
 
-      socket.on("joinRoom", (roomName) => {
+      socket.on("joinRoom", (roomName) => { 
         global.log("Room Joining", roomName);
         socket.join(roomName);
-        socket.id = roomName;
+        const result = maps.setUserOnline(roomName);
         this.io.to(roomName).emit("joinRoom", "You connected to the server");
+        socket.broadcast.emit("userStatus", 1);
       });
 
-      socket.on("previousChats", async (data)=>{
-        const {username} = data
-        const result = await User.findUser(data, socket.username)
-        this.io.to(username).emit("previousChats", result)
-      })
+      socket.on("previousChats", async (data) => {
+        const { username } = data;
+        const result = await User.findUser(data, socket.username);
+        this.io.to(username).emit("previousChats", result);
+      });
 
       socket.on("previousMessages", async (data) => {
+        const { username } = data;
         const result = await Messages.getMessages(data);
-        this.io.to(data.username).emit("previousMessages", result);
+        this.io.to(username).emit("previousMessages", result);
+      });
+
+      socket.on("userStatus", (data) => {
+        const { username, roomName } = data;
+        const result = maps.checkUserStatus(roomName);
+        this.io.to(username).emit("userStatus", result);
       });
 
       socket.on("sendMessage", (message) => {
@@ -46,10 +55,10 @@ class SocketServer {
         global.log("sendMessage", message);
       });
 
-      socket.on("user-left", () => {});
-
       socket.on("disconnect", () => {
         global.log("disconnect", socket.username);
+        const result = maps.setUserOffline(socket.username);
+        socket.broadcast.emit("userStatus", result);
       });
     });
   }

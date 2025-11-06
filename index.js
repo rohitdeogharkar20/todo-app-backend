@@ -66,6 +66,7 @@ const init = async () => {
   await connectDB();
   initializeQueue();
   initializeQueueListener(io)
+  require('./maps/userMaps')
 };
 
 init();
