@@ -1,10 +1,10 @@
 const Mongo = require("../utils");
 const { v4: uuidv4 } = require("uuid");
 const { Validator } = require("node-input-validator");
+const e = require("cors");
 
 const insertMessage = async (data) => {
-
-  console.log(data.message)
+  
   const insertData = {
     messageId: uuidv4(),
     deleteStatus: 0,
@@ -68,7 +68,39 @@ const getMessages = async (data) => {
   }
 };
 
+const updatePreviousMessage = async (roomName, username = "") => {
+  try {
+    let filter = {};
+    let udpateData = {};
+
+    if (username != "") {
+      filter = {
+        roomName: username,
+        status: "delivered",
+      };
+      udpateData = {
+        status: "read",
+      };
+    } else {
+      filter = {
+        roomName,
+        status: "sent",
+      };
+      udpateData = {
+        status: "delivered",
+      };
+    }
+
+    const result = await Mongo.updateMany("messages", filter, udpateData);
+    global.log("mesage udpate", result);
+    return result;
+  } catch (err) {
+    global.log("update message error", err);
+  }
+};
+
 module.exports = {
   insertMessage,
   getMessages,
+  updatePreviousMessage,
 };

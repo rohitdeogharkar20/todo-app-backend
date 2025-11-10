@@ -2,8 +2,10 @@ require("dotenv").config();
 
 const { addQueue } = require("../messageQueue/producer");
 const Messages = require("../models/message");
+const Chats = require("../models/chat");
 const User = require("../models/user");
 const maps = require("../maps/userMaps");
+const chatMaps = require("../maps/chatMaps");
 const { JWT_SECRET = "&^*1$-+12345&*^($)", JWT_EXPIRY = "1d" } = process.env;
 
 const jwt = require("jsonwebtoken");
@@ -24,10 +26,11 @@ class SocketServer {
         socket.username ? socket.username : socket.id
       );
 
-      socket.on("joinRoom", (roomName) => { 
+      socket.on("joinRoom", (roomName) => {
         global.log("Room Joining", roomName);
         socket.join(roomName);
         const result = maps.setUserOnline(roomName);
+        const udpateResult = Messages.updatePreviousMessage(roomName);
         this.io.to(roomName).emit("joinRoom", "You connected to the server");
         socket.broadcast.emit("userStatus", 1);
       });
@@ -39,8 +42,27 @@ class SocketServer {
       });
 
       socket.on("previousMessages", async (data) => {
-        const { username } = data;
+        const { username, roomName, pagination } = data;
+        console.log(data);
         const result = await Messages.getMessages(data);
+        const udpateResult = await Messages.updatePreviousMessage(
+          roomName,
+          username
+        );
+        if (pagination == 0) {
+          let result;
+          [result] = await Chats.findChat([username, roomName]);
+
+          if (!result) {
+            [result] = await Chats.createChat([username, roomName]);
+          }
+          console.log(
+            `chatId : ${result.chatId} | username : ${username} | roomName : ${roomName}`
+          );
+          this.io.to(username).emit("chatId", result.chatId);
+          const setChatUser = chatMaps.setUserChat(username, result.chatId);
+        }
+        this.io.to(roomName).emit("readStatus", "read");
         this.io.to(username).emit("previousMessages", result);
       });
 

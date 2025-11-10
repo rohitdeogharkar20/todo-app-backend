@@ -42,6 +42,19 @@ const findAndUpdateData = async (collectionName, filter, data) => {
   return result;
 };
 
+const updateMany = async (collectionName, filter, data) => {
+  const updateDate = {
+    $set: {
+      ...data,
+      updatedAt: dayjs().format("YYYY-MM-DD HH:mm:ss"),
+    },
+  };
+  const result = await getDB()
+    .collection(collectionName)
+    .updateMany(filter, updateDate);
+  return result;
+};
+
 const countData = async (collectionName, data) => {
   const result = await getDB().collection(collectionName).countDocuments(data);
   return result;
@@ -51,5 +64,6 @@ module.exports = {
   insertData,
   findData,
   findAndUpdateData,
+  updateMany,
   countData,
 };
