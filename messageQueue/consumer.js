@@ -1,6 +1,7 @@
 require("dotenv").config();
 
-const { REDIS_HOST, REDIS_PORT, REDIS_USER, REDIS_PASSWORD } = process.env;
+const { REDIS_HOST, REDIS_PORT, REDIS_USER, REDIS_PASSWORD, REDIS_TLS } =
+  process.env;
 
 const { Worker } = require("bullmq");
 const Message = require("../models/message");
@@ -25,6 +26,7 @@ const initializeQueueListener = (io) => {
       socket: {
         host: REDIS_HOST,
         port: REDIS_PORT,
+        tls: REDIS_TLS,
       },
     },
   });
