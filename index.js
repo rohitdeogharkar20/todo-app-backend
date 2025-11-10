@@ -53,8 +53,6 @@ app.get("/", (req, res) => {
 
 const init = async () => {
 
-  console.log("processssssssss", process.env)
-
   if (LOGGER_ENABLE == "true") {
     global.log("LOGGER ENABLE !!!");
   } else {
