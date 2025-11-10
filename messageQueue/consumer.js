@@ -5,6 +5,8 @@ const { REDIS_HOST, REDIS_PORT, REDIS_USER, REDIS_PASSWORD, REDIS_TLS } =
 
 const { Worker } = require("bullmq");
 const Message = require("../models/message");
+const maps = require("../maps/userMaps");
+const chatMaps = require("../maps/chatMaps");
 
 let worker;
 
@@ -12,11 +14,24 @@ const initializeQueueListener = (io) => {
   global.log("Message Queue Listener Initialize");
 
   const process = async (job) => {
-    const { roomName } = job.data;
-    const result = await Message.insertMessage(job.data);
-    if (result) {
+    const { roomName, username, message, chatId } = job.data;
+
+    let status = "sent";
+
+    const userStatus = maps.checkUserStatus(roomName);
+    if (userStatus == 1) {
       io.to(roomName).emit("receiveMessage", job.data);
+      status = "delivered";
+      const result = chatMaps.getUserChat(roomName);
+      console.log(result, chatId)
+      if (result == chatId) {
+        status = "read";
+      }
     }
+    io.to(username).emit("messageStatus", { status, message });
+
+    job.data.status = status;
+    const result = await Message.insertMessage(job.data);
   };
 
   worker = new Worker("messageQueue", process, {
