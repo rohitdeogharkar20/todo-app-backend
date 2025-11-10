@@ -23,7 +23,7 @@ const initializeQueueListener = (io) => {
       io.to(roomName).emit("receiveMessage", job.data);
       status = "delivered";
       const result = chatMaps.getUserChat(roomName);
-      console.log(result, chatId)
+      console.log(result, chatId);
       if (result == chatId) {
         status = "read";
       }
