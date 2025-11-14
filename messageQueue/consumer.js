@@ -1,12 +1,29 @@
 require("dotenv").config();
 
-const { REDIS_HOST, REDIS_PORT, REDIS_USER, REDIS_PASSWORD, REDIS_TLS } =
-  process.env;
+const {
+  REDIS_HOST,
+  REDIS_PORT,
+  REDIS_USER,
+  REDIS_PASSWORD,
+  REDIS_TLS,
+  REDIS_URL,
+} = process.env;
 
 const { Worker } = require("bullmq");
+const { createClient } = require("redis");
+
 const Message = require("../models/message");
 const maps = require("../maps/userMaps");
 const chatMaps = require("../maps/chatMaps");
+
+const redis = createClient({
+  socket: {
+    host: REDIS_HOST,
+    port: REDIS_PORT,
+    tls: REDIS_TLS,
+  },
+  password: REDIS_PASSWORD,
+});
 
 let worker;
 
@@ -35,15 +52,7 @@ const initializeQueueListener = (io) => {
   };
 
   worker = new Worker("messageQueue", process, {
-    connection: {
-      username: REDIS_USER, // the user you created
-      password: REDIS_PASSWORD,
-      socket: {
-        host: REDIS_HOST,
-        port: REDIS_PORT,
-        tls: REDIS_TLS,
-      },
-    },
+    connection: redis,
   });
 
   worker.on("completed", async (job) => {
