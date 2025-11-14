@@ -18,6 +18,7 @@ const redis = createClient({
     port: REDIS_PORT,
     tls: REDIS_TLS,
   },
+  username: REDIS_USER,
   password: REDIS_PASSWORD,
 });
 
