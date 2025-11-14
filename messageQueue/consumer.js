@@ -37,6 +37,7 @@ const initializeQueueListener = (io) => {
 
     const userStatus = maps.checkUserStatus(roomName);
     if (userStatus == 1) {
+      global.log("Recieve message", { data: job.data });
       io.to(roomName).emit("receiveMessage", job.data);
       status = "delivered";
       const result = chatMaps.getUserChat(roomName);
