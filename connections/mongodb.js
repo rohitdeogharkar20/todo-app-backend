@@ -1,22 +1,10 @@
 require("dotenv").config();
 
-const {
-  MONGO_HOST = "localhost",
-  MONGO_PORT = 27017,
-  MONGO_DATABASE = "dev",
-  MONGO_REMOTE_CONNECTION,
-  ENVIRONMENT,
-} = process.env;
+const { MONGO_DATABASE, ENVIRONMENT } = process.env;
 
-const { MongoClient } = require("mongodb");
+const { client } = require("../connections/connections");
+
 let db;
-let client;
-
-if (ENVIRONMENT == "development") {
-  client = new MongoClient(`mongodb://${MONGO_HOST}:${MONGO_PORT}`);
-} else {
-  client = new MongoClient(MONGO_REMOTE_CONNECTION);
-}
 
 client.on("close", () => global.log("mongo connection closing"));
 

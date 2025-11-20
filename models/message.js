@@ -4,7 +4,6 @@ const { Validator } = require("node-input-validator");
 const e = require("cors");
 
 const insertMessage = async (data) => {
-  
   const insertData = {
     messageId: uuidv4(),
     deleteStatus: 0,
@@ -92,7 +91,7 @@ const updatePreviousMessage = async (roomName, username = "") => {
     }
 
     const result = await Mongo.updateMany("messages", filter, udpateData);
-    global.log("mesage udpate", result);
+    global.log("mesage udpate", { roomName, username });
     return result;
   } catch (err) {
     global.log("update message error", err);

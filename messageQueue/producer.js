@@ -1,26 +1,6 @@
-require("dotenv").config();
-
-const {
-  REDIS_HOST,
-  REDIS_PORT,
-  REDIS_USER,
-  REDIS_PASSWORD,
-  REDIS_TLS,
-  REDIS_URL,
-} = process.env;
-
 const { Queue } = require("bullmq");
-const { createClient } = require("redis");
 
-const redis = createClient({
-  socket: {
-    host: REDIS_HOST,
-    port: REDIS_PORT,
-    tls: REDIS_TLS,
-  },
-  username: REDIS_USER,
-  password: REDIS_PASSWORD,
-});
+const {redis} = require('../connections/connections')
 
 let messageQueue;
 

@@ -43,7 +43,6 @@ class SocketServer {
 
       socket.on("previousMessages", async (data) => {
         const { username, roomName, pagination } = data;
-        console.log(data);
         const result = await Messages.getMessages(data);
         const udpateResult = await Messages.updatePreviousMessage(
           roomName,
@@ -56,9 +55,6 @@ class SocketServer {
           if (!result) {
             [result] = await Chats.createChat([username, roomName]);
           }
-          console.log(
-            `chatId : ${result.chatId} | username : ${username} | roomName : ${roomName}`
-          );
           this.io.to(username).emit("chatId", result.chatId);
           const setChatUser = chatMaps.setUserChat(username, result.chatId);
         }

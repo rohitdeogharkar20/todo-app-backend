@@ -3,7 +3,7 @@ const chatUserMap = new Map();
 const chatMaps = {
   setUserChat: (username, chatId) => {
     const result = chatUserMap.set(username, chatId);
-    console.log(chatUserMap)
+    global.log("setUserChat", chatUserMap)
     return 1;
   },
   getUserChat : (username) => {
