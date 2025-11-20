@@ -30,7 +30,7 @@ if (ENVIRONMENT == "development") {
     host: REDIS_HOST,
     username: REDIS_USER,
     password: REDIS_PASSWORD,
-    tls: REDIS_TLS,
+    // tls: REDIS_TLS,
     maxRetriesPerRequest: null,
   });
 }
